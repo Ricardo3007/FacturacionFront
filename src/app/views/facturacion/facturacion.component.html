@@ -1,0 +1,89 @@
+<nz-page-header  >
+  <nz-page-header-title>Facturación</nz-page-header-title>
+  <nz-page-header-extra>
+      <button  nz-button nzType="primary"  class="mr-2" [routerLink]="['/busqueda']" >Buscar factura</button>
+
+  </nz-page-header-extra>
+
+</nz-page-header>
+<div class="flex flex-col gap-2">
+  <div class="flex flex-row gap-1">
+    <label >Nueva Factura</label>
+    <button nz-button nzType="default" nzSize="small" (click)="nuevaFactura()">Nueva Factura</button>
+  </div>
+
+  <form [formGroup]="form">
+  <div class="grid grid-cols-3 gap-3">
+    <div class="flex flex-col gap-1">
+      <label> Cliente</label>
+      <nz-select class="w-full" nzShowSearch nzAllowClear nzPlaceHolder="Select a person" formControlName="idCliente" nzSize="small">
+        <ng-container *ngIf="clientes$ | async as clientes">
+          <nz-option *ngFor="let cliente of clientes" [nzLabel]="cliente.razonSocial " [nzValue]="cliente.id"></nz-option>
+        </ng-container>
+       <!--  <nz-option nzLabel="Jack" nzValue="jack"></nz-option>
+        <nz-option nzLabel="Lucy" nzValue="lucy"></nz-option>
+        <nz-option nzLabel="Tom" nzValue="tom"></nz-option> -->
+      </nz-select>
+    </div>
+    <div class="flex flex-col gap-1">
+      <label> Numero de factura</label>
+      <nz-input-number class="w-full" formControlName="nroFactura" [nzMin]="1"  [nzStep]="1" nzSize="small"></nz-input-number>
+
+    </div>
+  </div>
+</form>
+<div class="flex flex-row gap-2 justify-start">
+  <button  nz-button nzType="primary"  class="mr-2" (click)="agregarFilaProducto()" [disabled]="form.invalid">Agregar Producto</button>
+</div>
+  <nz-table #basicTable [nzData]="productosFactura" [nzBordered]="true" [nzSize]="'small'">
+    <thead>
+      <tr>
+        <th nzAlign="center" nzWidth="25%">Producto</th>
+        <th nzAlign="center" nzWidth="25%">Precio</th>
+        <th nzAlign="center" nzWidth="15%">Cantidad</th>
+        <th nzAlign="center" nzWidth="8%">Imagen</th>
+        <th nzAlign="center" nzWidth="25%">Totales</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data;let i=index">
+        <td nzAlign="center">
+          <nz-select class="w-full" nzShowSearch nzAllowClear nzPlaceHolder="Seleccione un producto" nzSize="small" [ngModel]="data.idProducto" (ngModelChange)="addProductoToFactura($event,i)">
+          <nz-option *ngFor="let item of productos " [nzLabel]="item.nombreProducto" [nzValue]="item.id"></nz-option>
+
+        </nz-select></td>
+        <td nzAlign="center">{{data.precioUnitarioProducto | currency}}</td>
+        <td nzAlign="center">
+           <nz-input-number [(ngModel)]="data.cantidadDeProducto" [nzMin]="1"  [nzStep]="1" nzSize="small" (nzBlur)="calcularSubtotal(i)"></nz-input-number>
+        </td>
+        <td nzAlign="center"><img src="assets/noimage.png" alt=""></td>
+        <td nzAlign="center">{{data.subtotalProducto | currency }}</td>
+      </tr>
+    </tbody>
+  </nz-table>
+  <div class="flex flex-row gap-2 justify-end">
+    <nz-table #basicTable nzTemplateMode [nzBordered]="true" [nzSize]="'small'">
+      <tbody>
+        <tr >
+          <td nzAlign="left" nzWidth="25%" class="font-semibold">Sub total</td>
+          <td nzAlign="right" nzWidth="35%">{{detalleTotales.subTotal | currency}}</td>
+        </tr>
+        <tr >
+          <td nzAlign="left" nzWidth="25%"  class="font-semibold">Impuestos ( 19% ) </td>
+          <td nzAlign="right" nzWidth="35%">{{detalleTotales.impuestos | currency}}</td>
+        </tr>
+        <tr >
+          <td nzAlign="left" nzWidth="25%"  class="font-semibold">Total</td>
+          <td nzAlign="right" nzWidth="35%">{{detalleTotales.totalFactura | currency}}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+
+  </div>
+
+  <div class="flex flex-row gap-2 justify-start">
+    <button  nz-button nzType="primary"  class="mr-2" (click)="guardarFactura()" >Guardar Factura</button>
+  </div>
+
+
+</div>

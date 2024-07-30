@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "reservasProject": {
+    "TestingPrueba": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/reservas-project",
+            "outputPath": "dist/testing-prueba",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -22,9 +22,17 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets"
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
+
             ],
             "styles": [
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css",
+              "src/styles.less",
               "src/styles.css"
             ],
             "scripts": []
@@ -51,7 +59,13 @@
               "vendorChunk": true,
               "extractLicenses": false,
               "sourceMap": true,
-              "namedChunks": true
+              "namedChunks": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -60,10 +74,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "reservasProject:build:production"
+              "browserTarget": "TestingPrueba:build:production"
             },
             "development": {
-              "browserTarget": "reservasProject:build:development"
+              "browserTarget": "TestingPrueba:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +85,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "reservasProject:build"
+            "browserTarget": "TestingPrueba:build"
           }
         },
         "test": {
@@ -94,5 +108,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "e2ef0697-3e84-4bf1-92ac-63036229bf75"
   }
 }

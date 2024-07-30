@@ -1,0 +1,56 @@
+<nz-page-header  nzBackIcon >
+  <nz-page-header-title>Busqueda de factura</nz-page-header-title>
+  <nz-page-header-extra>
+
+  </nz-page-header-extra>
+
+</nz-page-header>
+<div class="flex flex-col gap-2">
+<form [formGroup]="form">
+  <div class="flex flex-row gap-2">
+    <label >Tipo Busqueda</label>
+    <nz-radio-group formControlName="tipoBusqueda" nzButtonStyle="solid">
+      <label nz-radio-button [nzValue]="0">Cliente</label>
+      <label nz-radio-button [nzValue]="1">Nurmero Factura</label>
+    </nz-radio-group>
+  </div>
+  <div class="flex flex-row gap-2">
+    <div class="flex flex-col gap-2" *ngIf="form.value.tipoBusqueda==0">
+      <label >Cliente</label>
+        <nz-select class="w-full" nzShowSearch nzAllowClear nzPlaceHolder="Select a person" formControlName="idCliente" nzSize="small">
+          <ng-container *ngIf="clientes$ | async as clientes">
+            <nz-option *ngFor="let cliente of clientes" [nzLabel]="cliente.razonSocial " [nzValue]="cliente.id"></nz-option>
+          </ng-container>
+        </nz-select>
+    </div>
+    <div class="flex flex-col gap-2" *ngIf="form.value.tipoBusqueda==1">
+      <label >Numero de Factura</label>
+      <nz-input-number class="w-full" formControlName="nroFactura" [nzMin]="1"  [nzStep]="1" nzSize="small"></nz-input-number>
+    </div>
+    <div class="flex flex-col gap-2 self-end"  >
+
+      <button  nz-button nzType="primary" nzSize="small"  class="mr-2" (click)="buscarFactura()" [disabled]="form.invalid ">Buscar</button>
+
+    </div>
+
+
+  </div>
+</form>
+<nz-table #basicTable [nzData]="facturas" [nzLoading]="loading" [nzBordered]="true" [nzSize]="'small'">
+  <thead>
+    <tr>
+      <th nzAlign="center" nzWidth="25%">Numero de Factura</th>
+      <th nzAlign="center" nzWidth="25%">Fecha Emision</th>
+      <th nzAlign="center" nzWidth="25%">Total Facturado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let data of basicTable.data">
+
+      <td nzAlign="center">{{data.numeroFactura}}</td>
+      <td nzAlign="center">{{data.fechaEmisionFactura | date}}</td>
+      <td nzAlign="center">{{data.totalFactura | currency}}</td>
+    </tr>
+  </tbody>
+</nz-table>
+</div>
